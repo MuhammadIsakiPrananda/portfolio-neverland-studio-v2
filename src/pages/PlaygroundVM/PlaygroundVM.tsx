@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   Terminal, Power, Clock, Plus, AlertCircle,
   ArrowLeft, HardDrive, Shield, Key, Server
 } from 'lucide-react';
@@ -21,18 +21,18 @@ const PlaygroundVM = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  
+
   // VM States
   const [isVMActive, setIsVMActive] = useState(false);
   const [containerId, setContainerId] = useState<string>('');
   const [vmPassword, setVmPassword] = useState<string>('');
   const [vmOS, setVmOS] = useState<string>('');
   const [resources, setResources] = useState({ ram: '', storage: '', cpu: '' });
-  
+
   // Session States
   const [timeRemaining, setTimeRemaining] = useState(3600); // 1 hour default
   const [expiresAt, setExpiresAt] = useState<Date | null>(null);
-  
+
   // Terminal States
   const [terminalLines, setTerminalLines] = useState<TerminalLine[]>([]);
   const [currentCommand, setCurrentCommand] = useState('');
@@ -42,15 +42,15 @@ const PlaygroundVM = () => {
   const [isStarting, setIsStarting] = useState(false);
   const [commandsExecuted, setCommandsExecuted] = useState(0);
   const [currentDir, setCurrentDir] = useState('/root');
-  
+
   // Tab Completion States
   const [tabSuggestions, setTabSuggestions] = useState<string[]>([]);
   const [tabIndex, setTabIndex] = useState(-1);
   const [originalCommand, setOriginalCommand] = useState('');
-  
+
   // Backend URL - prefer explicit env var, otherwise use same-origin proxy (most reliable)
   const apiBase = import.meta.env.VITE_API_URL || '/api';
-  
+
   const terminalContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -70,18 +70,18 @@ const PlaygroundVM = () => {
   const formatLsOutput = (output: string): string => {
     const items = output.split('\n').filter((item: string) => item.trim());
     if (items.length === 0) return '';
-    
+
     // Sort items alphabetically (case-insensitive)
-    const sortedItems = items.sort((a, b) => 
+    const sortedItems = items.sort((a, b) =>
       a.toLowerCase().localeCompare(b.toLowerCase())
     );
-    
+
     // Calculate max width for column alignment
     const maxWidth = Math.max(...sortedItems.map(item => item.length));
     const columnWidth = maxWidth + 2; // Add padding
     const terminalWidth = 100; // Assume 100 chars width
     const columnsPerRow = Math.max(1, Math.floor(terminalWidth / columnWidth));
-    
+
     // Build rows with aligned columns
     const rows: string[] = [];
     for (let i = 0; i < sortedItems.length; i += columnsPerRow) {
@@ -92,7 +92,7 @@ const PlaygroundVM = () => {
         .trimEnd();
       rows.push(rowText);
     }
-    
+
     return rows.join('\n');
   };
 
@@ -114,11 +114,11 @@ const PlaygroundVM = () => {
   useEffect(() => {
     const savedContainerId = localStorage.getItem('vm-container-id');
     const savedExpiresAt = localStorage.getItem('vm-expires-at');
-    
+
     if (savedContainerId && savedExpiresAt) {
       const expiresDate = new Date(savedExpiresAt);
       const now = new Date();
-      
+
       if (expiresDate > now) {
         // Session still valid
         setContainerId(savedContainerId);
@@ -141,7 +141,7 @@ const PlaygroundVM = () => {
     const interval = setInterval(() => {
       const now = new Date();
       const remaining = Math.floor((expiresAt.getTime() - now.getTime()) / 1000);
-      
+
       if (remaining <= 0) {
         addTerminalLine('error', '⏰ Session expired! VM akan dihapus...');
         setIsVMActive(false);
@@ -150,7 +150,7 @@ const PlaygroundVM = () => {
         localStorage.removeItem('vm-expires-at');
         return;
       }
-      
+
       setTimeRemaining(remaining);
     }, 1000);
 
@@ -179,10 +179,10 @@ const PlaygroundVM = () => {
       console.log('[VM] Response status:', response.status, 'ok:', response.ok);
       const contentType = response.headers.get('content-type') || '';
       console.log('[VM] Content-Type:', contentType);
-      
+
       const raw = await response.text();
       console.log('[VM] Raw response:', raw.substring(0, 200));
-      
+
       let data;
       try {
         data = JSON.parse(raw);
@@ -206,31 +206,31 @@ const PlaygroundVM = () => {
 
       // Save session info
       console.log('[VM] Creating VM with ID:', data.container_id);
-      
+
       try {
         setContainerId(data.container_id);
         console.log('[VM] Set container ID');
-        
+
         setVmPassword(data.password);
         console.log('[VM] Set password');
-        
+
         setVmOS(data.os || 'Debian 13 (Trixie)');
         setResources(data.resources || { ram: '1 GB', storage: '20 GB', cpu: '1 Core' });
         console.log('[VM] Set OS and resources');
-        
+
         const expiry = new Date(data.expires_at);
         setExpiresAt(expiry);
         console.log('[VM] Set expiry:', expiry);
-        
+
         // Save to localStorage
         localStorage.setItem('vm-container-id', data.container_id);
         localStorage.setItem('vm-expires-at', expiry.toISOString());
         console.log('[VM] Saved to localStorage');
-        
+
         // Clear terminal and show success message
         setTerminalLines([]);
         console.log('[VM] Cleared terminal lines');
-        
+
         setTimeout(() => {
           addTerminalLine('success', `✓ VM created successfully!`);
           addTerminalLine('output', '');
@@ -247,16 +247,16 @@ const PlaygroundVM = () => {
           addTerminalLine('output', '');
           console.log('[VM] Added terminal messages');
         }, 100);
-        
+
         // Set VM active LAST to ensure all state is ready
         setIsVMActive(true);
         console.log('[VM] Set VM active = true');
-        
+
       } catch (stateError) {
         console.error('[VM] Error setting state:', stateError);
         addTerminalLine('error', `❌ Error initializing VM state: ${stateError}`);
       }
-      
+
     } catch (err) {
       console.error('[VM] Fetch error:', err);
       const errMsg = err instanceof Error ? err.message : 'Unknown error';
@@ -275,7 +275,7 @@ const PlaygroundVM = () => {
 
     addTerminalLine('output', '');
     addTerminalLine('output', '⏳ Stopping Docker container...');
-    
+
     try {
       await fetch(`${apiBase}/v1/vm/${containerId}/stop`, {
         method: 'POST',
@@ -307,7 +307,7 @@ const PlaygroundVM = () => {
     setExpiresAt(null);
     setCommandsExecuted(0);
     setCurrentDir('/root');
-    
+
     // Clean up localStorage
     localStorage.removeItem('vm-container-id');
     localStorage.removeItem('vm-expires-at');
@@ -332,7 +332,7 @@ const PlaygroundVM = () => {
         const newExpiresAt = new Date(data.expires_at);
         setExpiresAt(newExpiresAt);
         localStorage.setItem('vm-expires-at', newExpiresAt.toISOString());
-        
+
         addTerminalLine('success', `✓ Session extended by ${hours} hour(s)`);
         addTerminalLine('output', `New expiry: ${newExpiresAt.toLocaleTimeString()}`);
       } else {
@@ -373,7 +373,7 @@ const PlaygroundVM = () => {
         const targetDir = parts[1];
         // Build command with proper current directory prefix and validate with pwd
         const cdCommand = `cd ${currentDir} && cd ${targetDir} && pwd`;
-        
+
         if (!containerId) {
           addTerminalLine('error', '❌ No active container. Please start the VM first.');
           return;
@@ -417,15 +417,15 @@ const PlaygroundVM = () => {
     }
 
     setIsExecuting(true);
-    
+
     // Show loading indicator in terminal
     const loadingLineIndex = terminalLines.length;
     addTerminalLine('output', `⏳ Executing: ${trimmedCmd}`);
-    
+
     try {
       // Prefix command with cd to maintain directory context
       const prefixedCmd = `cd ${currentDir} && ${trimmedCmd}`;
-      
+
       const response = await fetch(`${apiBase}/v1/vm/${containerId}/execute`, {
         method: 'POST',
         headers: {
@@ -438,7 +438,7 @@ const PlaygroundVM = () => {
       });
 
       const data = await response.json();
-      
+
       // Remove loading indicator
       setTerminalLines(prev => prev.slice(0, loadingLineIndex));
 
@@ -451,10 +451,10 @@ const PlaygroundVM = () => {
       const output = data.output?.trim() || '';
       if (output) {
         // Check if command is ls or ls variant (ls, ls -l, ls -la, etc.)
-        const isLsCommand = trimmedCmd.toLowerCase().startsWith('ls') && 
-                           !trimmedCmd.toLowerCase().includes('-l') &&
-                           !trimmedCmd.toLowerCase().includes('--list');
-        
+        const isLsCommand = trimmedCmd.toLowerCase().startsWith('ls') &&
+          !trimmedCmd.toLowerCase().includes('-l') &&
+          !trimmedCmd.toLowerCase().includes('--list');
+
         if (isLsCommand) {
           // Format ls output in columns like real terminal
           const formattedOutput = formatLsOutput(output);
@@ -463,13 +463,13 @@ const PlaygroundVM = () => {
           const lines = output.split('\n');
           lines.forEach((line: string) => {
             // Simple colorization based on keywords
-            if (line.toLowerCase().includes('error') || 
-                line.toLowerCase().includes('failed') ||
-                line.toLowerCase().includes('fatal')) {
+            if (line.toLowerCase().includes('error') ||
+              line.toLowerCase().includes('failed') ||
+              line.toLowerCase().includes('fatal')) {
               addTerminalLine('error', line);
-            } else if (line.toLowerCase().includes('success') || 
-                       line.includes('✓') ||
-                       line.toLowerCase().includes('done')) {
+            } else if (line.toLowerCase().includes('success') ||
+              line.includes('✓') ||
+              line.toLowerCase().includes('done')) {
               addTerminalLine('success', line);
             } else {
               addTerminalLine('output', line);
@@ -507,7 +507,7 @@ const PlaygroundVM = () => {
   // Get file list for tab completion
   const getFileList = async (directory?: string): Promise<string[]> => {
     if (!containerId || isExecuting) return [];
-    
+
     try {
       const targetDir = directory || currentDir;
       const response = await fetch(`${apiBase}/v1/vm/${containerId}/execute`, {
@@ -520,7 +520,7 @@ const PlaygroundVM = () => {
           command: `cd ${targetDir} && ls -1A 2>/dev/null`,
         }),
       });
-      
+
       const data = await response.json();
       if (data.success && data.output) {
         return data.output.trim().split('\n').filter(Boolean);
@@ -528,35 +528,35 @@ const PlaygroundVM = () => {
     } catch (error) {
       console.error('Failed to get file list:', error);
     }
-    
+
     return [];
   };
-  
+
   // Handle Tab completion
   const handleTabCompletion = async (e: React.KeyboardEvent) => {
     e.preventDefault();
-    
+
     // Get the last word (what we want to complete)
     const words = currentCommand.split(' ');
     const lastWord = words[words.length - 1] || '';
-    
+
     // Check if it's a path (contains /)
     const isPath = lastWord.includes('/');
-    
+
     // If we're starting a new tab sequence
     if (tabSuggestions.length === 0 || originalCommand !== currentCommand) {
       setOriginalCommand(currentCommand);
-      
+
       let fileList: string[];
       let searchPrefix: string;
       let pathPrefix: string = '';
-      
+
       if (isPath) {
         // Handle path completion (e.g., /usr/lo<Tab> or ./fold<Tab>)
         const lastSlashIndex = lastWord.lastIndexOf('/');
         pathPrefix = lastWord.substring(0, lastSlashIndex + 1);
         searchPrefix = lastWord.substring(lastSlashIndex + 1);
-        
+
         // Determine directory to list
         let targetDir: string;
         if (lastWord.startsWith('/')) {
@@ -572,18 +572,18 @@ const PlaygroundVM = () => {
           // Relative path without ./
           targetDir = currentDir + '/' + pathPrefix;
         }
-        
+
         fileList = await getFileList(targetDir);
       } else {
         // Simple filename completion in current directory
         searchPrefix = lastWord;
         fileList = await getFileList();
       }
-      
-      const matches = fileList.filter(file => 
+
+      const matches = fileList.filter(file =>
         file.toLowerCase().startsWith(searchPrefix.toLowerCase())
       ).sort();
-      
+
       if (matches.length === 0) {
         // No matches - do nothing
         return;
@@ -618,14 +618,14 @@ const PlaygroundVM = () => {
       await handleTabCompletion(e);
       return;
     }
-    
+
     // Reset tab completion on any other key
     if (tabSuggestions.length > 0) {
       setTabSuggestions([]);
       setTabIndex(-1);
       setOriginalCommand('');
     }
-    
+
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (historyIndex < commandHistory.length - 1) {
@@ -674,16 +674,16 @@ const PlaygroundVM = () => {
         >
           {/* Accent Line */}
           <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 mx-auto mb-8 rounded-full" />
-          
+
           <h1 className="text-5xl lg:text-6xl font-bold mb-6">
             <span className="text-white/90">Virtual Machine</span>{' '}
             <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
               Playground
             </span>
           </h1>
-          
+
           <p className="text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Full root access Debian 13 container with internet connectivity. Install any tool, run exploits, 
+            Full root access Debian 13 container with internet connectivity. Install any tool, run exploits,
             practice pentesting - just like TryHackMe. Perfect for learning cybersecurity and Linux administration.
           </p>
         </motion.div>
@@ -706,7 +706,7 @@ const PlaygroundVM = () => {
               Operating System
             </div>
             <div className="text-sm lg:text-base font-bold bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
-              Debian 13 (Trixie)
+              {vmOS || 'Debian 13 (Trixie)'}
             </div>
           </motion.div>
 
@@ -720,7 +720,7 @@ const PlaygroundVM = () => {
               Resources
             </div>
             <div className="text-sm lg:text-base font-bold bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
-              1GB RAM • 20GB
+              {resources.ram && resources.storage ? `${resources.ram} • ${resources.storage}` : '1GB RAM • 20GB'}
             </div>
           </motion.div>
 
@@ -790,7 +790,7 @@ const PlaygroundVM = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3 flex-wrap">
                 {!isVMActive ? (
                   <Button
@@ -866,9 +866,9 @@ const PlaygroundVM = () => {
                 <div key={index} className="mb-1 whitespace-pre-wrap break-words">
                   <span className={
                     line.type === 'input' ? 'text-emerald-400 font-bold' :
-                    line.type === 'error' ? 'text-red-400' :
-                    line.type === 'success' ? 'text-green-400' :
-                    'text-gray-300'
+                      line.type === 'error' ? 'text-red-400' :
+                        line.type === 'success' ? 'text-green-400' :
+                          'text-gray-300'
                   }>
                     {line.content}
                   </span>
@@ -902,7 +902,7 @@ const PlaygroundVM = () => {
                       spellCheck="false"
                     />
                   </form>
-                  
+
                   {/* Tab Completion Suggestions */}
                   {tabSuggestions.length > 1 && (
                     <div className="mt-1 text-xs ml-2">
@@ -931,7 +931,7 @@ const PlaygroundVM = () => {
             title="How It Works"
             className="mb-12"
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* What Happens When You Start */}
             <motion.div

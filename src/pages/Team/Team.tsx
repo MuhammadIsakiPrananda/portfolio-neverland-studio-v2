@@ -159,7 +159,7 @@ export default function Team() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {team.map((member, index) => (
+                        {team.map((member) => (
                             <motion.div
                                 key={member.name}
                                 className="rounded-xl p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.03] transition-all duration-300 group hover:-translate-y-1 text-center"

@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code, Lock, Terminal, AlertTriangle,
-  Zap, Database, Flag,
+  Database, Flag,
   CheckCircle, XCircle, Info,
-  ArrowRight, Trophy, Star, Swords, Award, TrendingUp
+  ArrowRight, Trophy, Star, Swords,
+  Cpu, Binary, Search, Eye, Smartphone, FileSearch
 } from 'lucide-react';
 import Button from '@components/atoms/Button';
 import SectionTitle from '@components/molecules/SectionTitle';
@@ -13,7 +14,7 @@ import { staggerContainer, staggerItem } from '@utils/animations';
 import { useAuthState } from '@/hooks/useAuthState';
 
 // Challenge types
-type ChallengeType = 'sql-injection' | 'xss' | 'command-injection' | 'crypto' | 'ctf';
+type ChallengeType = 'sql-injection' | 'xss' | 'command-injection' | 'crypto' | 'ctf' | 'binary-exploitation' | 'reverse-engineering' | 'forensics' | 'steganography' | 'osint' | 'mobile-security';
 
 interface Challenge {
   id: string;
@@ -136,6 +137,93 @@ const ALL_CHALLENGES: Challenge[] = [
   { id: 'ctf-008', type: 'ctf', title: 'Full Chain Exploit', description: 'Chain multiple vulns for RCE', difficulty: 'Expert', points: 500, icon: Flag },
   { id: 'ctf-009', type: 'ctf', title: 'Real World Scenario', description: 'Realistic company infrastructure', difficulty: 'Expert', points: 600, icon: Flag },
   { id: 'ctf-010', type: 'ctf', title: 'CTF Master Challenge', description: 'Ultimate CTF challenge', difficulty: 'Expert', points: 1000, icon: Flag },
+
+  // Binary Exploitation Challenges (15 challenges)
+  { id: 'bin-001', type: 'binary-exploitation', title: 'Buffer Overflow Basics', description: 'Exploit simple buffer overflow vulnerability', difficulty: 'Easy', points: 100, icon: Cpu },
+  { id: 'bin-002', type: 'binary-exploitation', title: 'Stack Overflow', description: 'Overflow stack buffer to control execution', difficulty: 'Easy', points: 150, icon: Cpu },
+  { id: 'bin-003', type: 'binary-exploitation', title: 'Return-to-libc', description: 'Execute system calls without shellcode', difficulty: 'Medium', points: 250, icon: Cpu },
+  { id: 'bin-004', type: 'binary-exploitation', title: 'ROP Chain Basics', description: 'Build ROP chain for code execution', difficulty: 'Medium', points: 300, icon: Cpu },
+  { id: 'bin-005', type: 'binary-exploitation', title: 'Format String Vulnerability', description: 'Exploit format string bug', difficulty: 'Medium', points: 275, icon: Cpu },
+  { id: 'bin-006', type: 'binary-exploitation', title: 'Heap Overflow', description: 'Exploit heap-based buffer overflow', difficulty: 'Hard', points: 400, icon: Cpu },
+  { id: 'bin-007', type: 'binary-exploitation', title: 'Use-After-Free', description: 'Exploit UAF vulnerability', difficulty: 'Hard', points: 450, icon: Cpu },
+  { id: 'bin-008', type: 'binary-exploitation', title: 'Integer Overflow', description: 'Exploit integer overflow vulnerability', difficulty: 'Hard', points: 350, icon: Cpu },
+  { id: 'bin-009', type: 'binary-exploitation', title: 'Format String to Shell', description: 'Use format strings for code execution', difficulty: 'Expert', points: 500, icon: Cpu },
+  { id: 'bin-010', type: 'binary-exploitation', title: 'Advanced ROP', description: 'Complex ROP chain exploitation', difficulty: 'Expert', points: 550, icon: Cpu },
+  { id: 'bin-011', type: 'binary-exploitation', title: 'Stack Canary Bypass', description: 'Bypass stack protection mechanisms', difficulty: 'Expert', points: 600, icon: Cpu },
+  { id: 'bin-012', type: 'binary-exploitation', title: 'ASLR Bypass', description: 'Bypass Address Space Layout Randomization', difficulty: 'Expert', points: 650, icon: Cpu },
+  { id: 'bin-013', type: 'binary-exploitation', title: 'Shellcode Writing', description: 'Write custom shellcode', difficulty: 'Expert', points: 700, icon: Cpu },
+  { id: 'bin-014', type: 'binary-exploitation', title: 'Multi-stage Exploit', description: 'Complex multi-stage exploitation', difficulty: 'Expert', points: 800, icon: Cpu },
+  { id: 'bin-015', type: 'binary-exploitation', title: 'Binary Exploitation Master', description: 'Ultimate binary exploitation challenge', difficulty: 'Expert', points: 1000, icon: Cpu },
+
+  // Reverse Engineering Challenges (15 challenges)
+  { id: 'rev-001', type: 'reverse-engineering', title: 'Basic Reverse', description: 'Analyze simple compiled program', difficulty: 'Easy', points: 75, icon: Binary },
+  { id: 'rev-002', type: 'reverse-engineering', title: 'String Analysis', description: 'Extract hidden strings from binary', difficulty: 'Easy', points: 100, icon: Binary },
+  { id: 'rev-003', type: 'reverse-engineering', title: 'Function Identification', description: 'Identify key functions in binary', difficulty: 'Easy', points: 100, icon: Binary },
+  { id: 'rev-004', type: 'reverse-engineering', title: 'Password Cracking', description: 'Reverse engineer password check', difficulty: 'Medium', points: 175, icon: Binary },
+  { id: 'rev-005', type: 'reverse-engineering', title: 'Algorithm Recovery', description: 'Recover encrypted algorithm', difficulty: 'Medium', points: 200, icon: Binary },
+  { id: 'rev-006', type: 'reverse-engineering', title: 'Obfuscated Code', description: 'Analyze obfuscated binary', difficulty: 'Medium', points: 250, icon: Binary },
+  { id: 'rev-007', type: 'reverse-engineering', title: 'Packed Binary', description: 'Unpack and analyze packed executable', difficulty: 'Hard', points: 350, icon: Binary },
+  { id: 'rev-008', type: 'reverse-engineering', title: 'Anti-Debug Techniques', description: 'Bypass anti-debugging measures', difficulty: 'Hard', points: 400, icon: Binary },
+  { id: 'rev-009', type: 'reverse-engineering', title: 'License Key Generator', description: 'Reverse engineer key generation', difficulty: 'Hard', points: 375, icon: Binary },
+  { id: 'rev-010', type: 'reverse-engineering', title: 'Malware Analysis', description: 'Analyze malicious software', difficulty: 'Expert', points: 500, icon: Binary },
+  { id: 'rev-011', type: 'reverse-engineering', title: 'Kernel Driver Reversing', description: 'Reverse engineer kernel driver', difficulty: 'Expert', points: 600, icon: Binary },
+  { id: 'rev-012', type: 'reverse-engineering', title: 'Firmware Analysis', description: 'Extract and analyze firmware', difficulty: 'Expert', points: 550, icon: Binary },
+  { id: 'rev-013', type: 'reverse-engineering', title: 'Binary Patching', description: 'Modify binary behavior', difficulty: 'Expert', points: 450, icon: Binary },
+  { id: 'rev-014', type: 'reverse-engineering', title: 'Custom Decryption', description: 'Decrypt custom encryption routine', difficulty: 'Expert', points: 650, icon: Binary },
+  { id: 'rev-015', type: 'reverse-engineering', title: 'Reverse Engineering Master', description: 'Ultimate reverse engineering challenge', difficulty: 'Expert', points: 1000, icon: Binary },
+
+  // Forensics Challenges (15 challenges)
+  { id: 'for-001', type: 'forensics', title: 'File Recovery', description: 'Recover deleted files from disk image', difficulty: 'Easy', points: 75, icon: FileSearch },
+  { id: 'for-002', type: 'forensics', title: 'Memory Analysis', description: 'Analyze memory dump for artifacts', difficulty: 'Easy', points: 100, icon: FileSearch },
+  { id: 'for-003', type: 'forensics', title: 'Log Analysis', description: 'Parse and analyze system logs', difficulty: 'Easy', points: 75, icon: FileSearch },
+  { id: 'for-004', type: 'forensics', title: 'PCAP Analysis', description: 'Analyze network capture file', difficulty: 'Medium', points: 150, icon: FileSearch },
+  { id: 'for-005', type: 'forensics', title: 'Registry Analysis', description: 'Examine Windows registry for evidence', difficulty: 'Medium', points: 175, icon: FileSearch },
+  { id: 'for-006', type: 'forensics', title: 'Disk Imaging', description: 'Create and analyze disk images', difficulty: 'Medium', points: 200, icon: FileSearch },
+  { id: 'for-007', type: 'forensics', title: 'Timeline Analysis', description: 'Create incident timeline from artifacts', difficulty: 'Hard', points: 300, icon: FileSearch },
+  { id: 'for-008', type: 'forensics', title: 'Volatility Analysis', description: 'Use Volatility for memory forensics', difficulty: 'Hard', points: 350, icon: FileSearch },
+  { id: 'for-009', type: 'forensics', title: 'Malware Forensics', description: 'Analyze malware behavior', difficulty: 'Hard', points: 400, icon: FileSearch },
+  { id: 'for-010', type: 'forensics', title: 'Email Header Analysis', description: 'Trace email origin and spoofing', difficulty: 'Medium', points: 200, icon: FileSearch },
+  { id: 'for-011', type: 'forensics', title: 'Browser Artifacts', description: 'Extract browser history and cache', difficulty: 'Medium', points: 175, icon: FileSearch },
+  { id: 'for-012', type: 'forensics', title: 'USB Device Tracking', description: 'Track USB device usage history', difficulty: 'Hard', points: 300, icon: FileSearch },
+  { id: 'for-013', type: 'forensics', title: 'Windows Event Logs', description: 'Analyze Windows security events', difficulty: 'Hard', points: 350, icon: FileSearch },
+  { id: 'for-014', type: 'forensics', title: 'Network Forensics', description: 'Deep packet analysis and reconstruction', difficulty: 'Expert', points: 500, icon: FileSearch },
+  { id: 'for-015', type: 'forensics', title: 'Forensics Master', description: 'Ultimate digital forensics challenge', difficulty: 'Expert', points: 1000, icon: FileSearch },
+
+  // Steganography Challenges (10 challenges)
+  { id: 'steg-001', type: 'steganography', title: 'Image Metadata', description: 'Extract hidden data from image metadata', difficulty: 'Easy', points: 50, icon: Eye },
+  { id: 'steg-002', type: 'steganography', title: 'LSB Extraction', description: 'Extract data from least significant bits', difficulty: 'Easy', points: 75, icon: Eye },
+  { id: 'steg-003', type: 'steganography', title: 'PNG Hidden Data', description: 'Find hidden data in PNG files', difficulty: 'Easy', points: 100, icon: Eye },
+  { id: 'steg-004', type: 'steganography', title: 'Audio Steganography', description: 'Extract hidden data from audio', difficulty: 'Medium', points: 150, icon: Eye },
+  { id: 'steg-005', type: 'steganography', title: 'Video Steganography', description: 'Find hidden data in video files', difficulty: 'Medium', points: 200, icon: Eye },
+  { id: 'steg-006', type: 'steganography', title: 'Exif Data Extraction', description: 'Extract hidden data from EXIF', difficulty: 'Easy', points: 75, icon: Eye },
+  { id: 'steg-007', type: 'steganography', title: 'Steghide Basics', description: 'Use steghide to extract secrets', difficulty: 'Medium', points: 125, icon: Eye },
+  { id: 'steg-008', type: 'steganography', title: 'Frequency Analysis', description: 'Analyze frequency for hidden data', difficulty: 'Hard', points: 250, icon: Eye },
+  { id: 'steg-009', type: 'steganography', title: 'Advanced Steganography', description: 'Complex multi-layer steganography', difficulty: 'Expert', points: 400, icon: Eye },
+  { id: 'steg-010', type: 'steganography', title: 'Steganography Master', description: 'Ultimate steganography challenge', difficulty: 'Expert', points: 750, icon: Eye },
+
+  // OSINT Challenges (10 challenges)
+  { id: 'osint-001', type: 'osint', title: 'Social Media OSINT', description: 'Gather info from social media profiles', difficulty: 'Easy', points: 50, icon: Search },
+  { id: 'osint-002', type: 'osint', title: 'Email Tracing', description: 'Trace email origin and headers', difficulty: 'Easy', points: 75, icon: Search },
+  { id: 'osint-003', type: 'osint', title: 'WHOIS Lookup', description: 'Find domain owner information', difficulty: 'Easy', points: 50, icon: Search },
+  { id: 'osint-004', type: 'osint', title: 'Image Geolocation', description: 'Find location from photo', difficulty: 'Medium', points: 150, icon: Search },
+  { id: 'osint-005', type: 'osint', title: 'People Search', description: 'Find person information from public sources', difficulty: 'Medium', points: 125, icon: Search },
+  { id: 'osint-006', type: 'osint', title: 'Google Dorking', description: 'Use advanced Google search techniques', difficulty: 'Easy', points: 75, icon: Search },
+  { id: 'osint-007', type: 'osint', title: 'Dark Web OSINT', description: 'Gather intel from dark web sources', difficulty: 'Hard', points: 300, icon: Search },
+  { id: 'osint-008', type: 'osint', title: 'Corporate OSINT', description: 'Gather information about companies', difficulty: 'Medium', points: 175, icon: Search },
+  { id: 'osint-009', type: 'osint', title: 'Certificate Transparency', description: 'Find hidden subdomains via CT logs', difficulty: 'Medium', points: 200, icon: Search },
+  { id: 'osint-010', type: 'osint', title: 'OSINT Master', description: 'Ultimate OSINT challenge', difficulty: 'Expert', points: 750, icon: Search },
+
+  // Mobile Security Challenges (10 challenges)
+  { id: 'mob-001', type: 'mobile-security', title: 'Android APK Analysis', description: 'Analyze Android application structure', difficulty: 'Easy', points: 75, icon: Smartphone },
+  { id: 'mob-002', type: 'mobile-security', title: 'Android Decompilation', description: 'Decompile APK to source code', difficulty: 'Easy', points: 100, icon: Smartphone },
+  { id: 'mob-003', type: 'mobile-security', title: 'Insecure Data Storage', description: 'Find sensitive data in app storage', difficulty: 'Medium', points: 150, icon: Smartphone },
+  { id: 'mob-004', type: 'mobile-security', title: 'API Key Extraction', description: 'Extract hardcoded API keys', difficulty: 'Medium', points: 175, icon: Smartphone },
+  { id: 'mob-005', type: 'mobile-security', title: 'Traffic Analysis', description: 'Analyze mobile app network traffic', difficulty: 'Medium', points: 200, icon: Smartphone },
+  { id: 'mob-006', type: 'mobile-security', title: 'Deep Link Exploitation', description: 'Exploit deep link vulnerabilities', difficulty: 'Hard', points: 300, icon: Smartphone },
+  { id: 'mob-007', type: 'mobile-security', title: 'iOS Binary Analysis', description: 'Analyze iOS application binary', difficulty: 'Hard', points: 350, icon: Smartphone },
+  { id: 'mob-008', type: 'mobile-security', title: 'Root Detection Bypass', description: 'Bypass root/jailbreak detection', difficulty: 'Hard', points: 325, icon: Smartphone },
+  { id: 'mob-009', type: 'mobile-security', title: 'Runtime Manipulation', description: 'Manipulate app at runtime with Frida', difficulty: 'Expert', points: 500, icon: Smartphone },
+  { id: 'mob-010', type: 'mobile-security', title: 'Mobile Security Master', description: 'Ultimate mobile security challenge', difficulty: 'Expert', points: 750, icon: Smartphone },
 ];
 
 export default function PlaygroundPage() {
@@ -307,6 +395,12 @@ export default function PlaygroundPage() {
         handleCommandInjection(commandInput, activeChallenge.id);
         break;
       case 'crypto':
+      case 'binary-exploitation':
+      case 'reverse-engineering':
+      case 'forensics':
+      case 'steganography':
+      case 'osint':
+      case 'mobile-security':
         handleCryptoChallenge(cryptoInput, activeChallenge.id);
         break;
       case 'ctf':
@@ -430,9 +524,14 @@ export default function PlaygroundPage() {
 
               <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-orange-500 to-red-500 rounded-l-xl" />
-                <p className="text-gray-400 ml-4">
+                <p className="text-gray-400 mb-4 ml-4">
                   This search form reflects your input directly in the page without sanitization. Exploit it!
                 </p>
+                <div className="ml-4 bg-black/30 p-4 rounded-lg border border-orange-500/10">
+                  <code className="text-orange-400 text-sm font-mono">
+                    &lt;div&gt;Search results for: {xssInput || '[INPUT]'}&lt;/div&gt;
+                  </code>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -448,19 +547,11 @@ export default function PlaygroundPage() {
                   />
                 </div>
 
-                <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-4">
-                  <p className="text-yellow-400 text-sm font-medium mb-2">Preview: Your input will be displayed as:</p>
-                  <div className="bg-black/30 p-3 rounded border border-white/5">
-                    <span className="text-gray-400">Search results for: </span>
-                    <span className="text-orange-400 font-mono">{xssInput || '[your input here]'}</span>
-                  </div>
-                </div>
-
                 <Button
                   onClick={handleChallengeSubmit}
                   className="w-full"
                   disabled={isSolved || !isLoggedIn}
-                  leftIcon={<Zap className="w-4 h-4" />}
+                  leftIcon={<Code className="w-4 h-4" />}
                 >
                   {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Test Payload'}
                 </Button>
@@ -731,6 +822,488 @@ export default function PlaygroundPage() {
           </motion.div>
         );
 
+      case 'binary-exploitation':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-red-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-red-500 to-orange-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Analyze the binary and exploit the vulnerability to gain control of execution flow.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4">
+                  <p className="text-red-400 text-sm font-medium mb-2">Challenge Info:</p>
+                  <ul className="text-sm text-gray-400 space-y-2 ml-4">
+                    <li className="list-disc">Binary: <code className="text-red-400">vulnerable_app</code></li>
+                    <li className="list-disc">Architecture: <code className="text-red-400">x64</code></li>
+                    <li className="list-disc">Protection: <code className="text-red-400">NX disabled</code></li>
+                    <li className="list-disc">Objective: <code className="text-red-400">Control RIP to get the flag</code></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Exploit Payload (Hex):</label>
+                  <textarea
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter your exploit payload..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-red-500/50 transition-colors h-32 resize-none"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<Cpu className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Exploit'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Look for buffer overflow in input function</li>
+                    <li className="list-disc">Use pattern_create.rb to find offset</li>
+                    <li className="list-disc">Try overwriting return address</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'reverse-engineering':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-indigo-500/10 border-indigo-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-indigo-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-violet-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Reverse engineer the binary to find the password or hidden flag.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-indigo-500/20 bg-indigo-500/5 p-4">
+                  <p className="text-indigo-400 text-sm font-medium mb-2">Disassembly Preview:</p>
+                  <div className="bg-black/30 p-3 rounded border border-white/5 font-mono text-xs text-indigo-300">
+                    <p>0x00401234: push rbp</p>
+                    <p>0x00401235: mov rbp, rsp</p>
+                    <p>0x00401238: sub rsp, 0x10</p>
+                    <p>0x0040123c: mov [rbp-8], edi</p>
+                    <p>0x00401240: call check_password</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Password / Flag:</label>
+                  <input
+                    type="text"
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter the password or flag..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<Binary className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Answer'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Use strings command to find hardcoded values</li>
+                    <li className="list-disc">Load in IDA/Ghidra for deeper analysis</li>
+                    <li className="list-disc">Check for simple comparison logic</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'forensics':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-slate-500/10 border-slate-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-slate-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-slate-500 to-gray-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Analyze the evidence to find hidden artifacts and extract the flag.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-slate-500/20 bg-slate-500/5 p-4">
+                  <p className="text-slate-400 text-sm font-medium mb-2">Evidence Files:</p>
+                  <ul className="text-sm text-gray-400 space-y-2 ml-4">
+                    <li className="list-disc">Memory dump: <code className="text-slate-400">memory.raw</code></li>
+                    <li className="list-disc">Network capture: <code className="text-slate-400">capture.pcap</code></li>
+                    <li className="list-disc">System logs: <code className="text-slate-400">syslog.log</code></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Extracted Information:</label>
+                  <textarea
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter extracted flag or information..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-slate-500/50 transition-colors h-32 resize-none"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<FileSearch className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Evidence'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Use volatility for memory analysis</li>
+                    <li className="list-disc">Look for suspicious processes</li>
+                    <li className="list-disc">Check network connections for C2 traffic</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'steganography':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-teal-500/10 border-teal-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-teal-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-teal-500 to-cyan-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Find hidden data within the image file.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-4">
+                  <p className="text-teal-400 text-sm font-medium mb-2">Stego Challenge:</p>
+                  <div className="flex items-center justify-center bg-black/30 p-6 rounded border border-white/5">
+                    <div className="text-center">
+                      <Eye className="w-16 h-16 text-teal-400 mx-auto mb-2" />
+                      <p className="text-gray-400 text-sm">secret.png</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Hidden Flag:</label>
+                  <input
+                    type="text"
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter the hidden flag..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-teal-500/50 transition-colors"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<Eye className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Flag'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Check LSB bits in image channels</li>
+                    <li className="list-disc">Use steghide with common passwords</li>
+                    <li className="list-disc">Examine EXIF metadata</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'osint':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-amber-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-amber-500 to-yellow-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Gather information from public sources to find the hidden flag.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
+                  <p className="text-amber-400 text-sm font-medium mb-2">Target Information:</p>
+                  <ul className="text-sm text-gray-400 space-y-2 ml-4">
+                    <li className="list-disc">Target: <code className="text-amber-400">@suspicious_user</code></li>
+                    <li className="list-disc">Platform: <code className="text-amber-400">Social Media</code></li>
+                    <li className="list-disc">Objective: <code className="text-amber-400">Find hidden email address</code></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Found Information / Flag:</label>
+                  <input
+                    type="text"
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter the found flag or information..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-amber-500/50 transition-colors"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<Search className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Intel'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Check social media profiles for metadata</li>
+                    <li className="list-disc">Use WHOIS to find domain registration info</li>
+                    <li className="list-disc">Image reverse search may help</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
+      case 'mobile-security':
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`p-3 rounded-lg border ${isSolved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-cyan-500/10 border-cyan-500/20'}`}>
+                    <Icon className={`w-6 h-6 ${isSolved ? 'text-emerald-400' : 'text-cyan-400'}`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{activeChallenge.title}</h3>
+                    <p className="text-sm text-gray-500">{activeChallenge.description}</p>
+                  </div>
+                </div>
+                {isSolved && (
+                  <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="text-emerald-400 font-bold text-sm">Solved</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.01] mb-6">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-cyan-500 to-blue-500 rounded-l-xl" />
+                <p className="text-gray-400 ml-4">
+                  Analyze the mobile application to find vulnerabilities and extract secrets.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
+                  <p className="text-cyan-400 text-sm font-medium mb-2">Application Details:</p>
+                  <ul className="text-sm text-gray-400 space-y-2 ml-4">
+                    <li className="list-disc">APK File: <code className="text-cyan-400">vulnerable_app.apk</code></li>
+                    <li className="list-disc">Platform: <code className="text-cyan-400">Android</code></li>
+                    <li className="list-disc">Objective: <code className="text-cyan-400">Find hardcoded API key</code></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">Extracted Secret / Flag:</label>
+                  <input
+                    type="text"
+                    value={cryptoInput}
+                    onChange={(e) => setCryptoInput(e.target.value)}
+                    placeholder="Enter the extracted secret or flag..."
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-cyan-500/50 transition-colors"
+                    disabled={isSolved || !isLoggedIn}
+                  />
+                </div>
+
+                <Button
+                  onClick={handleChallengeSubmit}
+                  className="w-full"
+                  disabled={isSolved || !isLoggedIn}
+                  leftIcon={<Smartphone className="w-4 h-4" />}
+                >
+                  {!isLoggedIn ? 'Login Required' : isSolved ? 'Challenge Completed' : 'Submit Answer'}
+                </Button>
+
+                <div className="rounded-lg border border-white/5 bg-white/[0.01] p-4">
+                  <p className="text-sm text-gray-400 mb-3 font-semibold flex items-center gap-2">
+                    <Info className="w-4 h-4" />
+                    Hints:
+                  </p>
+                  <ul className="text-sm text-gray-500 space-y-2 ml-6">
+                    <li className="list-disc">Decompile APK using jadx</li>
+                    <li className="list-disc">Search for hardcoded strings</li>
+                    <li className="list-disc">Check insecure data storage locations</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        );
+
       default:
         return null;
     }
@@ -770,18 +1343,23 @@ export default function PlaygroundPage() {
       filtered = filtered.filter(challenge => challenge.difficulty === filterDifficulty);
     }
 
-    // Apply type filter
+    // Apply type/category filter
     if (filterType !== 'All') {
-      const typeMapping: Record<string, ChallengeType> = {
-        'SQL Injection': 'sql-injection',
-        'XSS': 'xss',
-        'Command Injection': 'command-injection',
-        'Crypto': 'crypto',
-        'CTF': 'ctf'
+      const categoryMapping: Record<string, ChallengeType[]> = {
+        'Web Security': ['sql-injection', 'xss', 'command-injection', 'ctf'],
+        'System Security': ['binary-exploitation', 'reverse-engineering'],
+        'Cryptography': ['crypto'],
+        'Forensics': ['forensics', 'steganography'],
+        'Endpoint Security': ['mobile-security', 'osint']
       };
-      const mappedType = typeMapping[filterType];
-      if (mappedType) {
-        filtered = filtered.filter(challenge => challenge.type === mappedType);
+
+      const mappedTypes = categoryMapping[filterType];
+      if (mappedTypes) {
+        filtered = filtered.filter(challenge => mappedTypes.includes(challenge.type));
+      } else {
+        // Fallback for direct type selection if we ever need it, or legacy support
+        // This handles the case if filterType is a direct ChallengeType (though our UI only sets categories now)
+        filtered = filtered.filter(challenge => challenge.type === filterType);
       }
     }
 
@@ -831,9 +1409,9 @@ export default function PlaygroundPage() {
           <div className="flex flex-wrap gap-4 justify-center">
             {isLoggedIn ? (
               <>
-                <Button 
-                  variant="primary" 
-                  size="lg" 
+                <Button
+                  variant="primary"
+                  size="lg"
                   rightIcon={<ArrowRight className="w-5 h-5" />}
                   onClick={() => {
                     // Find first unsolved challenge
@@ -852,9 +1430,9 @@ export default function PlaygroundPage() {
                 >
                   Start Learning
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
+                <Button
+                  variant="outline"
+                  size="lg"
                   className="border-white/10 hover:border-purple-500/30"
                   onClick={() => {
                     const challengesSection = document.getElementById('available-challenges');
@@ -966,161 +1544,6 @@ export default function PlaygroundPage() {
           })}
         </motion.div>
 
-        {/* Section Title */}
-        <SectionTitle
-          subtitle="Training Arena"
-          title="Challenge Categories"
-          className="mb-12"
-        />
-
-        {/* Challenge Categories - Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {[
-            {
-              type: 'sql-injection' as ChallengeType,
-              title: 'SQL Injection',
-              description: 'Master database exploitation techniques and learn to identify SQL vulnerabilities',
-              icon: Database,
-              gradient: 'from-blue-500 to-cyan-500',
-              techniques: ['Union-based', 'Blind SQLi', 'Error-based', 'Time-based'],
-              difficulty: 'Beginner to Expert',
-              totalChallenges: 25
-            },
-            {
-              type: 'xss' as ChallengeType,
-              title: 'Cross-Site Scripting',
-              description: 'Learn to inject and execute malicious JavaScript in web applications',
-              icon: Code,
-              gradient: 'from-orange-500 to-red-500',
-              techniques: ['Reflected XSS', 'Stored XSS', 'DOM XSS', 'Filter Bypass'],
-              difficulty: 'Beginner to Expert',
-              totalChallenges: 25
-            },
-            {
-              type: 'command-injection' as ChallengeType,
-              title: 'Command Injection',
-              description: 'Execute unauthorized system commands and achieve remote code execution',
-              icon: Terminal,
-              gradient: 'from-green-500 to-emerald-500',
-              techniques: ['OS Commands', 'Code Injection', 'RCE', 'Reverse Shell'],
-              difficulty: 'Beginner to Expert',
-              totalChallenges: 25
-            },
-            {
-              type: 'ctf' as ChallengeType,
-              title: 'CTF Challenges',
-              description: 'Complete multi-step Capture The Flag scenarios combining various techniques',
-              icon: Flag,
-              gradient: 'from-purple-500 to-pink-500',
-              techniques: ['Web Exploit', 'Multi-step', 'Real Scenarios', 'Advanced'],
-              difficulty: 'Intermediate to Expert',
-              totalChallenges: 10
-            }
-          ].map((category) => {
-            const Icon = category.icon;
-            const categoryCompleted = ALL_CHALLENGES.filter(
-              c => c.type === category.type && solvedChallenges.includes(c.id)
-            ).length;
-            const categoryTotal = ALL_CHALLENGES.filter(c => c.type === category.type).length;
-            const completionRate = categoryTotal > 0 ? Math.round((categoryCompleted / categoryTotal) * 100) : 0;
-
-            return (
-              <motion.div
-                key={category.type}
-                variants={staggerItem}
-                whileHover={{ y: -8 }}
-                className="group"
-              >
-                <div className="relative rounded-xl p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-purple-500/20 transition-all h-full flex flex-col">
-                  {/* Top gradient line */}
-                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${category.gradient} rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity`} />
-
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-lg border border-white/5 bg-gradient-to-br ${category.gradient} bg-opacity-10`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    {categoryCompleted > 0 && (
-                      <div className="flex flex-col items-end gap-1">
-                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-full px-2.5 py-1">
-                          <span className="text-xs text-emerald-400 font-bold">
-                            {categoryCompleted}/{categoryTotal}
-                          </span>
-                        </div>
-                        <span className="text-xs text-gray-500">{completionRate}%</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-                    {category.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-4 leading-relaxed flex-1">
-                    {category.description}
-                  </p>
-
-                  {/* Techniques */}
-                  <div className="mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Award className="w-3.5 h-3.5 text-purple-400" />
-                      <span className="text-xs text-gray-400 font-semibold">Techniques:</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {category.techniques.map((tech, i) => (
-                        <span
-                          key={i}
-                          className="text-xs px-2 py-1 rounded-md bg-white/[0.03] border border-white/5 text-gray-400"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="space-y-2 pt-4 border-t border-white/5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500 flex items-center gap-1.5">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                        Difficulty:
-                      </span>
-                      <span className="text-purple-400 font-medium">{category.difficulty}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500 flex items-center gap-1.5">
-                        <Trophy className="w-3.5 h-3.5" />
-                        Total Challenges:
-                      </span>
-                      <span className="text-white font-bold">{category.totalChallenges}</span>
-                    </div>
-                  </div>
-
-                  {/* Progress Bar */}
-                  {categoryCompleted > 0 && (
-                    <div className="mt-4 pt-4 border-t border-white/5">
-                      <div className="flex items-center justify-between text-xs mb-2">
-                        <span className="text-gray-500">Your Progress</span>
-                        <span className="text-emerald-400 font-bold">{completionRate}%</span>
-                      </div>
-                      <div className="w-full bg-white/[0.05] rounded-full h-1.5">
-                        <div
-                          className={`bg-gradient-to-r ${category.gradient} h-1.5 rounded-full transition-all duration-500`}
-                          style={{ width: `${completionRate}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
         {/* Available Challenges Section */}
         <div id="available-challenges" className="scroll-mt-24">
           <motion.div
@@ -1136,254 +1559,270 @@ export default function PlaygroundPage() {
             />
           </motion.div>
 
-        {/* Toggle and Filters */}
-        <motion.div 
-          className="flex flex-wrap gap-4 mb-8 items-center justify-between"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="flex flex-wrap gap-4">
-            <div className="flex gap-2">
-              <span className="text-gray-400 text-sm font-medium py-2">Difficulty:</span>
-              {['All', 'Easy', 'Medium', 'Hard', 'Expert'].map((diff) => (
-                <button
-                  key={diff}
-                  onClick={() => {
-                    setFilterDifficulty(diff);
-                    setVisibleChallenges(12);
-                  }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${filterDifficulty === diff
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white/[0.02] text-gray-400 hover:bg-white/[0.05] border border-white/5'
-                    }`}
-                >
-                  {diff}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <span className="text-gray-400 text-sm font-medium py-2">Type:</span>
-              {['All', 'SQL Injection', 'XSS', 'Command Injection', 'Crypto', 'CTF'].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => {
-                    setFilterType(type);
-                    setVisibleChallenges(12);
-                  }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${filterType === type
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white/[0.02] text-gray-400 hover:bg-white/[0.05] border border-white/5'
-                    }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Toggle Show/Hide Solved */}
-          <div className="flex items-center gap-3 bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2">
-            <span className="text-sm text-gray-400 font-medium">
-              {showSolvedChallenges ? 'Hide Solved' : 'Show All'}
-            </span>
-            <button
-              onClick={() => setShowSolvedChallenges(!showSolvedChallenges)}
-              className={`relative w-12 h-6 rounded-full transition-colors ${showSolvedChallenges ? 'bg-purple-500' : 'bg-gray-600'
-                }`}
-            >
-              <div
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${showSolvedChallenges ? 'translate-x-6' : 'translate-x-0'
-                  }`}
-              />
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Challenges Grid */}
-        {filteredChallenges.length > 0 ? (
+          {/* Toggle and Filters */}
           <motion.div
-            key={`${filterDifficulty}-${filterType}-${showSolvedChallenges}`}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            className="flex flex-col md:flex-row gap-6 mb-8 items-start md:items-center justify-between"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.2 }}
           >
-            {filteredChallenges
-              .slice(0, visibleChallenges)
-            .map((challenge) => {
-              const Icon = challenge.icon;
-              const isSolved = solvedChallenges.includes(challenge.id);
+            <div className="flex flex-col gap-4 w-full md:w-auto">
+              {/* Category Tabs */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'All', label: 'All Challenges' },
+                  { id: 'Web Security', label: 'Web Security' },
+                  { id: 'System Security', label: 'System Security' },
+                  { id: 'Cryptography', label: 'Cryptography' },
+                  { id: 'Forensics', label: 'Forensics' },
+                  { id: 'Endpoint Security', label: 'Endpoint Security' }
+                ].map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      setFilterType(category.id); // Re-using filterType state for Category
+                      setVisibleChallenges(12);
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 border ${filterType === category.id
+                      ? 'bg-purple-500 text-white border-purple-500 shadow-lg shadow-purple-500/20'
+                      : 'bg-white/[0.05] text-gray-400 border-white/5 hover:bg-white/[0.1] hover:text-white hover:border-white/10'
+                      }`}
+                  >
+                    {category.label}
+                  </button>
+                ))}
+              </div>
 
-              return (
-                <div
-                  key={challenge.id}
-                  className={`group relative rounded-xl border transition-all duration-300 overflow-hidden ${isSolved
-                      ? 'border-emerald-500/30 bg-emerald-500/5'
-                      : isLoggedIn
-                        ? 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-purple-500/20 cursor-pointer'
-                        : 'border-white/5 bg-white/[0.02] opacity-60 cursor-not-allowed'
-                    }`}
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      setShowAuthModal(true);
-                      return;
-                    }
-                    if (!isSolved) {
-                      setActiveChallenge(challenge);
-                      setResult(null);
-                      setSqlQuery('');
-                      setXssInput('');
-                      setCommandInput('');
-                      setCryptoInput('');
-                      setShowChallengeModal(true);
-                    }
-                  }}
-                >
-                  {/* Top indicator for solved */}
-                  {isSolved && (
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-500" />
-                  )}
-
-                  <div className="p-6">
-                    {/* Header Section */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className={`p-3 rounded-lg border flex-shrink-0 ${isSolved
-                            ? 'bg-emerald-500/10 border-emerald-500/20'
-                            : 'bg-purple-500/10 border-purple-500/20'
-                          }`}>
-                          <Icon className={`w-5 h-5 ${isSolved ? 'text-emerald-400' : 'text-purple-400'}`} />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <h3 className="text-white font-bold text-base leading-tight">
-                              {challenge.title}
-                            </h3>
-                            {isSolved && (
-                              <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-2 py-0.5">
-                                <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                                <span className="text-xs text-emerald-400 font-bold">Solved</span>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Type Badge */}
-                          <span className="inline-block text-xs text-gray-500 font-medium">
-                            {challenge.type === 'sql-injection' ? 'SQL Injection' :
-                              challenge.type === 'xss' ? 'Cross-Site Scripting' :
-                                challenge.type === 'command-injection' ? 'Command Injection' :
-                                  challenge.type === 'crypto' ? 'Cryptography' :
-                                    'Capture The Flag'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-2">
-                      {challenge.description}
-                    </p>
-
-                    {/* Footer Section */}
-                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${challenge.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                            challenge.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
-                              challenge.difficulty === 'Hard' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
-                                'bg-red-500/10 text-red-400 border border-red-500/20'
-                          }`}>
-                          {challenge.difficulty}
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
-                          <Trophy className="w-3 h-3 text-purple-400" />
-                          <span className="text-xs text-purple-400 font-bold">{challenge.points} pts</span>
-                        </span>
-                      </div>
-
-                      {!isSolved && !isLoggedIn && (
-                        <div className="flex items-center gap-1.5 text-amber-400 text-sm font-semibold">
-                          <Lock className="w-4 h-4" />
-                          <span className="hidden sm:inline text-xs">Login Required</span>
-                        </div>
-                      )}
-
-                      {!isSolved && isLoggedIn && (
-                        <div className="flex items-center gap-1.5 text-purple-400 text-sm font-semibold group-hover:gap-2 transition-all">
-                          <span className="hidden sm:inline">Start</span>
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
+              {/* Difficulty Filter (Secondary) */}
+              <div className="flex items-center gap-3">
+                <span className="text-gray-500 text-sm font-medium">Difficulty:</span>
+                <div className="flex bg-white/[0.05] p-1 rounded-lg border border-white/5">
+                  {['All', 'Easy', 'Medium', 'Hard', 'Expert'].map((diff) => (
+                    <button
+                      key={diff}
+                      onClick={() => {
+                        setFilterDifficulty(diff);
+                        setVisibleChallenges(12);
+                      }}
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${filterDifficulty === diff
+                        ? 'bg-purple-500 text-white shadow-sm'
+                        : 'text-gray-400 hover:text-white'
+                        }`}
+                    >
+                      {diff}
+                    </button>
+                  ))}
                 </div>
-              );
-            })}
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12"
-          >
-            <div className="inline-flex p-6 rounded-full bg-white/[0.02] border border-white/5 mb-4">
-              <Info className="w-8 h-8 text-gray-500" />
+              </div>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">No Challenges Found</h3>
-            <p className="text-gray-400 mb-6">
-              No challenges match your current filters.
-            </p>
-            <Button
-              onClick={() => {
-                setFilterDifficulty('All');
-                setFilterType('All');
-                setShowSolvedChallenges(true);
-              }}
-              variant="outline"
-              className="border-white/10"
-            >
-              Reset Filters
-            </Button>
-          </motion.div>
-        )}
 
-        {/* View More Button */}
-        {(() => {
-
-          return visibleChallenges < filteredChallenges.length && (
-            <div className="flex flex-col items-center gap-4 mb-20">
-              <Button
-                onClick={() => setVisibleChallenges(prev => prev + 12)}
-                variant="outline"
-                size="lg"
-                className="border-white/10 hover:border-purple-500/30"
-              >
-                View More Challenges ({filteredChallenges.length - visibleChallenges} remaining)
-              </Button>
+            {/* Toggle Show/Hide Solved */}
+            <div className="flex items-center gap-3 bg-white/[0.02] border border-white/5 rounded-lg px-4 py-2">
+              <span className="text-sm text-gray-400 font-medium">
+                {showSolvedChallenges ? 'Hide Solved' : 'Show All'}
+              </span>
               <button
-                onClick={() => setVisibleChallenges(filteredChallenges.length)}
-                className="text-sm text-gray-400 hover:text-purple-400 transition-colors"
+                onClick={() => setShowSolvedChallenges(!showSolvedChallenges)}
+                className={`relative w-12 h-6 rounded-full transition-colors ${showSolvedChallenges ? 'bg-purple-500' : 'bg-gray-600'
+                  }`}
               >
-                Show All ({filteredChallenges.length} total)
+                <div
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${showSolvedChallenges ? 'translate-x-6' : 'translate-x-0'
+                    }`}
+                />
               </button>
             </div>
-          );
-        })()}
+          </motion.div>
 
-        {visibleChallenges >= filteredChallenges.length && filteredChallenges.length > 12 && (
-          <div className="flex justify-center mb-20">
-            <button
-              onClick={() => setVisibleChallenges(12)}
-              className="text-sm text-gray-400 hover:text-purple-400 transition-colors flex items-center gap-2"
+          {/* Challenges Grid */}
+          {filteredChallenges.length > 0 ? (
+            <motion.div
+              key={`${filterDifficulty}-${filterType}-${showSolvedChallenges}`}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <span>Show Less</span>
-              <ArrowRight className="w-4 h-4 rotate-[-90deg]" />
-            </button>
-          </div>
-        )}
+              {filteredChallenges
+                .slice(0, visibleChallenges)
+                .map((challenge) => {
+                  const Icon = challenge.icon;
+                  const isSolved = solvedChallenges.includes(challenge.id);
+
+                  return (
+                    <div
+                      key={challenge.id}
+                      className={`group relative rounded-xl border transition-all duration-300 overflow-hidden ${isSolved
+                        ? 'border-emerald-500/30 bg-emerald-500/5'
+                        : isLoggedIn
+                          ? 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-purple-500/20 cursor-pointer'
+                          : 'border-white/5 bg-white/[0.02] opacity-60 cursor-not-allowed'
+                        }`}
+                      onClick={() => {
+                        if (!isLoggedIn) {
+                          setShowAuthModal(true);
+                          return;
+                        }
+                        if (!isSolved) {
+                          setActiveChallenge(challenge);
+                          setResult(null);
+                          setSqlQuery('');
+                          setXssInput('');
+                          setCommandInput('');
+                          setCryptoInput('');
+                          setShowChallengeModal(true);
+                        }
+                      }}
+                    >
+                      {/* Top indicator for solved */}
+                      {isSolved && (
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-500" />
+                      )}
+
+                      <div className="p-6">
+                        {/* Header Section */}
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div className={`p-3 rounded-lg border flex-shrink-0 ${isSolved
+                              ? 'bg-emerald-500/10 border-emerald-500/20'
+                              : 'bg-purple-500/10 border-purple-500/20'
+                              }`}>
+                              <Icon className={`w-5 h-5 ${isSolved ? 'text-emerald-400' : 'text-purple-400'}`} />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <h3 className="text-white font-bold text-base leading-tight">
+                                  {challenge.title}
+                                </h3>
+                                {isSolved && (
+                                  <div className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-2 py-0.5">
+                                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span className="text-xs text-emerald-400 font-bold">Solved</span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Type Badge */}
+                              <span className="inline-block text-xs text-gray-500 font-medium">
+                                {challenge.type === 'sql-injection' ? 'SQL Injection' :
+                                  challenge.type === 'xss' ? 'Cross-Site Scripting' :
+                                    challenge.type === 'command-injection' ? 'Command Injection' :
+                                      challenge.type === 'crypto' ? 'Cryptography' :
+                                        challenge.type === 'binary-exploitation' ? 'Binary Exploitation' :
+                                          challenge.type === 'reverse-engineering' ? 'Reverse Engineering' :
+                                            challenge.type === 'forensics' ? 'Digital Forensics' :
+                                              challenge.type === 'steganography' ? 'Steganography' :
+                                                challenge.type === 'osint' ? 'OSINT' :
+                                                  challenge.type === 'mobile-security' ? 'Mobile Security' :
+                                                    'Capture The Flag'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-2">
+                          {challenge.description}
+                        </p>
+
+                        {/* Footer Section */}
+                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${challenge.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                              challenge.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
+                                challenge.difficulty === 'Hard' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
+                                  'bg-red-500/10 text-red-400 border border-red-500/20'
+                              }`}>
+                              {challenge.difficulty}
+                            </span>
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20">
+                              <Trophy className="w-3 h-3 text-purple-400" />
+                              <span className="text-xs text-purple-400 font-bold">{challenge.points} pts</span>
+                            </span>
+                          </div>
+
+                          {!isSolved && !isLoggedIn && (
+                            <div className="flex items-center gap-1.5 text-amber-400 text-sm font-semibold">
+                              <Lock className="w-4 h-4" />
+                              <span className="hidden sm:inline text-xs">Login Required</span>
+                            </div>
+                          )}
+
+                          {!isSolved && isLoggedIn && (
+                            <div className="flex items-center gap-1.5 text-purple-400 text-sm font-semibold group-hover:gap-2 transition-all">
+                              <span className="hidden sm:inline">Start</span>
+                              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-12"
+            >
+              <div className="inline-flex p-6 rounded-full bg-white/[0.02] border border-white/5 mb-4">
+                <Info className="w-8 h-8 text-gray-500" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Challenges Found</h3>
+              <p className="text-gray-400 mb-6">
+                No challenges match your current filters.
+              </p>
+              <Button
+                onClick={() => {
+                  setFilterDifficulty('All');
+                  setFilterType('All');
+                  setShowSolvedChallenges(true);
+                }}
+                variant="outline"
+                className="border-white/10"
+              >
+                Reset Filters
+              </Button>
+            </motion.div>
+          )}
+
+          {/* View More Button */}
+          {(() => {
+
+            return visibleChallenges < filteredChallenges.length && (
+              <div className="flex flex-col items-center gap-4 mb-20">
+                <Button
+                  onClick={() => setVisibleChallenges(prev => prev + 12)}
+                  variant="outline"
+                  size="lg"
+                  className="border-white/10 hover:border-purple-500/30"
+                >
+                  View More Challenges ({filteredChallenges.length - visibleChallenges} remaining)
+                </Button>
+                <button
+                  onClick={() => setVisibleChallenges(filteredChallenges.length)}
+                  className="text-sm text-gray-400 hover:text-purple-400 transition-colors"
+                >
+                  Show All ({filteredChallenges.length} total)
+                </button>
+              </div>
+            );
+          })()}
+
+          {visibleChallenges >= filteredChallenges.length && filteredChallenges.length > 12 && (
+            <div className="flex justify-center mb-20">
+              <button
+                onClick={() => setVisibleChallenges(12)}
+                className="text-sm text-gray-400 hover:text-purple-400 transition-colors flex items-center gap-2"
+              >
+                <span>Show Less</span>
+                <ArrowRight className="w-4 h-4 rotate-[-90deg]" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1424,9 +1863,9 @@ export default function PlaygroundPage() {
                           <h2 className="text-2xl font-bold text-white mb-2">{activeChallenge.title}</h2>
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${activeChallenge.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                                activeChallenge.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
-                                  activeChallenge.difficulty === 'Hard' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
-                                    'bg-red-500/10 text-red-400 border border-red-500/20'
+                              activeChallenge.difficulty === 'Medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' :
+                                activeChallenge.difficulty === 'Hard' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' :
+                                  'bg-red-500/10 text-red-400 border border-red-500/20'
                               }`}>
                               {activeChallenge.difficulty}
                             </span>
@@ -1439,7 +1878,13 @@ export default function PlaygroundPage() {
                                 activeChallenge.type === 'xss' ? 'Cross-Site Scripting' :
                                   activeChallenge.type === 'command-injection' ? 'Command Injection' :
                                     activeChallenge.type === 'crypto' ? 'Cryptography' :
-                                      'Capture The Flag'}
+                                      activeChallenge.type === 'binary-exploitation' ? 'Binary Exploitation' :
+                                        activeChallenge.type === 'reverse-engineering' ? 'Reverse Engineering' :
+                                          activeChallenge.type === 'forensics' ? 'Digital Forensics' :
+                                            activeChallenge.type === 'steganography' ? 'Steganography' :
+                                              activeChallenge.type === 'osint' ? 'OSINT' :
+                                                activeChallenge.type === 'mobile-security' ? 'Mobile Security' :
+                                                  'Capture The Flag'}
                             </span>
                           </div>
                         </div>
@@ -1467,8 +1912,8 @@ export default function PlaygroundPage() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             className={`mt-6 rounded-xl border p-6 ${result.success
-                                ? 'bg-emerald-500/5 border-emerald-500/30'
-                                : 'bg-red-500/5 border-red-500/30'
+                              ? 'bg-emerald-500/5 border-emerald-500/30'
+                              : 'bg-red-500/5 border-red-500/30'
                               }`}
                           >
                             <div className="flex items-start gap-3">

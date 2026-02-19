@@ -1,5 +1,7 @@
 # Neverland Studio - Corporate Website
 
+> **Last Updated: February 2026**
+
 > **Securing the Digital Future | Engineering Secure IT Systems**
 
 Website korporat profesional untuk perusahaan Cyber Security & IT yang dibangun dengan React, TypeScript, dan teknologi web modern.
@@ -220,8 +222,8 @@ src/pages/
 | OS | Ubuntu 20.04+ / Windows 10+ / macOS 11+ | Ubuntu 22.04+ |
 | RAM | 4 GB | 8 GB+ |
 | Disk Space | 10 GB | 20 GB+ |
-| Node.js | 20.x | 22.x |
-| PHP | 8.2 | 8.3+ |
+| Node.js | 22.x | 24.x |
+| PHP | 8.3 | 8.4+ |
 | Composer | 2.x | Latest |
 | Docker | 24.x | 25.x |
 | Docker Compose | 2.x | Latest |
@@ -229,7 +231,7 @@ src/pages/
 ### Software yang Diperlukan
 
 1. **Node.js & npm** - [Download](https://nodejs.org/)
-2. **PHP 8.2+** - [Download](https://www.php.net/downloads)
+2. **PHP 8.3+** - [Download](https://www.php.net/downloads)
 3. **Composer** - [Download](https://getcomposer.org/download/)
 4. **Git** - [Download](https://git-scm.com/downloads)
 5. **Docker & Docker Compose** - [Download](https://www.docker.com/products/docker-desktop/)
@@ -679,6 +681,18 @@ docker-compose logs -f
 
 ---
 
+## Roadmap 2026
+
+Fokus pengembangan kami di tahun 2026 meliputi:
+
+- [ ] **AI-Powered Security Analysis**: Integrasi AI untuk deteksi ancaman real-time
+- [ ] **Blockchain Verification**: Sistem verifikasi sertifikat berbasis blockchain
+- [ ] **Mobile App**: Pengembangan aplikasi native untuk iOS dan Android
+- [ ] **Enhanced Dashboard**: Analytics lebih mendalam dengan predictive modelling
+- [ ] **Global CDN Expansion**: Perluasan infrastruktur edge untuk performa global
+
+---
+
 ## Kontribusi
 
 1. Fork repository
@@ -706,3 +720,5 @@ Proyek ini dilisensikan di bawah MIT License - lihat file [LICENSE](LICENSE) unt
 **Dibuat dengan ❤️ untuk Neverland Studio**
 
 *Securing the Digital Future*
+
+Copyright © 2026 Neverland Studio. All rights reserved.

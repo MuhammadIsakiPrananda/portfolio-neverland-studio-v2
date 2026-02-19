@@ -7,7 +7,7 @@ import {
   FileSearch, Cloud, Target, Server, Flag, Globe, ShoppingCart, Zap,
   Palette, Box, ArrowUpCircle, FileCode, TrendingDown, Headphones,
   Database, HardDrive, Layers, Activity, LogOut, Swords, MessageSquare, Library,
-  Terminal, Lock, Cpu, Rss
+  Terminal, Lock, Cpu, Rss, Binary, Eye, Search, Smartphone, Bug
 } from 'lucide-react';
 import Logo from '@components/atoms/Logo';
 import AuthModal from '@components/organisms/AuthModal';
@@ -26,7 +26,7 @@ interface NavItem {
 const mainNavItems: NavItem[] = [
   { path: Routes.HOME, label: 'Home', icon: Home },
   {
-    path: '#',
+    path: '#services',
     label: 'Services',
     icon: Briefcase,
     subItems: [
@@ -113,11 +113,46 @@ const playgroundItems: NavItem[] = [
     icon: Swords,
     subItems: [
       { path: Routes.PLAYGROUND, label: 'All Challenges', icon: Swords },
-      { path: Routes.PLAYGROUND_SQL, label: 'SQL Injection', icon: Database },
-      { path: Routes.PLAYGROUND_WEB, label: 'Web Security (XSS)', icon: Code },
-      { path: Routes.PLAYGROUND_SYSTEM, label: 'System Security', icon: Terminal },
-      { path: Routes.PLAYGROUND_CRYPTO, label: 'Cryptography', icon: Lock },
-      { path: Routes.PLAYGROUND_VM, label: 'Virtual Machine', icon: Cpu },
+      { path: Routes.PLAYGROUND_CVE, label: 'CVE Lab', icon: Bug },
+      { path: Routes.PLAYGROUND_VM, label: 'Virtual Machine', icon: CloudCog },
+      {
+        path: '#web-security', // Unique ID
+        label: 'Web Security',
+        icon: Globe,
+        subItems: [
+          { path: Routes.PLAYGROUND_SQL, label: 'SQL Injection', icon: Database },
+          { path: Routes.PLAYGROUND_WEB, label: 'Web Security (XSS)', icon: Code },
+        ]
+      },
+      {
+        path: '#system-security', // Unique ID
+        label: 'System Security',
+        icon: Terminal,
+        subItems: [
+          { path: Routes.PLAYGROUND_SYSTEM, label: 'System Exploitation', icon: Terminal },
+          { path: '/playground/binary-exploitation', label: 'Binary Exploitation', icon: Cpu },
+          { path: '/playground/reverse-engineering', label: 'Reverse Engineering', icon: Binary },
+        ]
+      },
+      {
+        path: '#crypto-forensics', // Unique ID
+        label: 'Cryptography & Forensics',
+        icon: Lock,
+        subItems: [
+          { path: Routes.PLAYGROUND_CRYPTO, label: 'Cryptography', icon: Lock },
+          { path: '/playground/forensics', label: 'Forensics', icon: FileSearch },
+          { path: '/playground/steganography', label: 'Steganography', icon: Eye },
+        ]
+      },
+      {
+        path: '#endpoint-security', // Unique ID
+        label: 'Endpoint Security',
+        icon: Shield,
+        subItems: [
+          { path: '/playground/mobile-security', label: 'Mobile Security', icon: Smartphone },
+          { path: '/playground/osint', label: 'OSINT', icon: Search },
+        ]
+      },
     ]
   },
 ];
@@ -138,7 +173,7 @@ interface MenuItemProps {
   onToggle?: (path: string, parentPath?: string) => void;
 }
 
-function MenuItem({ item, index, isActive, isMobile = false, depth = 0, expandedItems = [], onToggle }: MenuItemProps) {
+function MenuItem({ item, isActive, isMobile = false, depth = 0, expandedItems = [], onToggle }: MenuItemProps) {
   const location = useLocation();
   const Icon = item.icon;
   const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -342,7 +377,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     // Check playground items
     for (const item of playgroundItems) {
       if (item.subItems) {
@@ -353,7 +388,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     // Check resource items
     for (const item of resourceItems) {
       if (item.subItems) {
@@ -364,7 +399,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     return null;
   };
 
@@ -380,7 +415,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     // Check playground items
     for (const item of playgroundItems) {
       if (item.subItems) {
@@ -391,7 +426,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     // Check resource items
     for (const item of resourceItems) {
       if (item.subItems) {
@@ -402,7 +437,7 @@ export default function Sidebar() {
         }
       }
     }
-    
+
     return null;
   };
 
@@ -455,12 +490,12 @@ export default function Sidebar() {
       setExpandedItems(prev => {
         const prevSorted = [...prev].sort();
         const toExpandSorted = [...toExpand].sort();
-        
+
         // If arrays are the same, don't update to prevent re-render
         if (JSON.stringify(prevSorted) === JSON.stringify(toExpandSorted)) {
           return prev;
         }
-        
+
         return toExpand;
       });
     }

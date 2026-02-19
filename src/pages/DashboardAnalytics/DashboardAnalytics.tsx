@@ -87,7 +87,7 @@ const saveToStorage = <T,>(key: string, value: T): void => {
 };
 
 export default function DashboardAnalytics() {
-  const [stats, setStats] = useState<AnalyticsStats>(() => loadFromStorage(STORAGE_KEY, defaultStats));
+  const [stats] = useState<AnalyticsStats>(() => loadFromStorage(STORAGE_KEY, defaultStats));
   const [revenueData] = useState<RevenueData[]>(defaultRevenueData);
   const [topServices] = useState<TopService[]>(defaultTopServices);
 

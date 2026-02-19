@@ -19,6 +19,13 @@ export const PlaygroundWeb = lazyLoad(() => import('@pages/PlaygroundWeb'));
 export const PlaygroundSystem = lazyLoad(() => import('@pages/PlaygroundSystem'));
 export const PlaygroundCrypto = lazyLoad(() => import('@/pages/PlaygroundCrypto'));
 export const PlaygroundVM = lazyLoad(() => import('@pages/PlaygroundVM'));
+export const PlaygroundBinary = lazyLoad(() => import('@pages/PlaygroundBinary'));
+export const PlaygroundReverse = lazyLoad(() => import('@pages/PlaygroundReverse'));
+export const PlaygroundForensics = lazyLoad(() => import('@pages/PlaygroundForensics'));
+export const PlaygroundSteganography = lazyLoad(() => import('@pages/PlaygroundSteganography'));
+export const PlaygroundOSINT = lazyLoad(() => import('@pages/PlaygroundOSINT'));
+export const PlaygroundMobile = lazyLoad(() => import('@pages/PlaygroundMobile'));
+export const PlaygroundCVE = lazyLoad(() => import('@pages/PlaygroundCVE'));
 export const Contact = lazyLoad(() => import('@pages/Contact'));
 export const Help = lazyLoad(() => import('@pages/Help'));
 export const Settings = lazyLoad(() => import('@pages/Settings'));
@@ -101,6 +108,13 @@ export const mainRoutes: RouteConfig[] = [
   { path: AppRoutes.PLAYGROUND_SYSTEM, element: PlaygroundSystem },
   { path: AppRoutes.PLAYGROUND_CRYPTO, element: PlaygroundCrypto },
   { path: AppRoutes.PLAYGROUND_VM, element: PlaygroundVM },
+  { path: '/playground/binary-exploitation', element: PlaygroundBinary },
+  { path: '/playground/reverse-engineering', element: PlaygroundReverse },
+  { path: '/playground/forensics', element: PlaygroundForensics },
+  { path: '/playground/steganography', element: PlaygroundSteganography },
+  { path: '/playground/osint', element: PlaygroundOSINT },
+  { path: '/playground/mobile-security', element: PlaygroundMobile },
+  { path: AppRoutes.PLAYGROUND_CVE, element: PlaygroundCVE },
   { path: AppRoutes.CONTACT, element: Contact },
   { path: AppRoutes.HELP, element: Help },
   { path: AppRoutes.SETTINGS, element: Settings },

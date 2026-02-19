@@ -160,15 +160,15 @@ export default function Dashboard() {
   const [contacts, setContacts] = useState<Contact[]>(() => loadFromStorage(STORAGE_KEYS.CONTACTS, defaultContacts));
   const [clients, setClients] = useState<Client[]>(() => loadFromStorage(STORAGE_KEYS.CLIENTS, defaultClients));
   const [analytics, setAnalytics] = useState<AnalyticsData>(() => loadFromStorage(STORAGE_KEYS.ANALYTICS, defaultAnalytics));
-  
+
   const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'contacts' | 'clients'>('overview');
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date(analytics.updatedAt));
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showAddModal, setShowAddModal] = useState<string | null>(null);
-  const [editingItem, setEditingItem] = useState<{type: string; data: any} | null>(null);
-  const [deletingItem, setDeletingItem] = useState<{type: string; id: number; name: string} | null>(null);
+  const [_editingItem, setEditingItem] = useState<{ type: string; data: any } | null>(null);
+  const [deletingItem, setDeletingItem] = useState<{ type: string; id: number; name: string } | null>(null);
   const [formData, setFormData] = useState<any>({});
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -346,7 +346,7 @@ export default function Dashboard() {
         >
           <div className="relative border border-white/5 rounded-xl sm:rounded-2xl p-6 sm:p-8 overflow-hidden bg-gradient-to-b from-white/[0.02] to-transparent">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-            
+
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <div>
                 <div className="flex items-center gap-3 mb-2">
@@ -447,8 +447,8 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('overview')}
             className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'overview'
-                ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
           >
             <BarChart3 className="w-4 h-4" />
@@ -457,8 +457,8 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('projects')}
             className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'projects'
-                ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
           >
             <FolderKanban className="w-4 h-4" />
@@ -467,8 +467,8 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('contacts')}
             className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'contacts'
-                ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
           >
             <Mail className="w-4 h-4" />
@@ -477,8 +477,8 @@ export default function Dashboard() {
           <button
             onClick={() => setActiveTab('clients')}
             className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === 'clients'
-                ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              ? 'bg-gradient-to-r from-primary/20 via-secondary/15 to-primary/20 text-white shadow-lg shadow-primary/10 border border-primary/20'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
           >
             <Users className="w-4 h-4" />
@@ -613,7 +613,7 @@ export default function Dashboard() {
                         <span>{project.progress}%</span>
                       </div>
                       <div className="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
                           style={{ width: `${project.progress}%` }}
                         />
@@ -704,7 +704,7 @@ export default function Dashboard() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
                             <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                              <div 
+                              <div
                                 className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
                                 style={{ width: `${project.progress}%` }}
                               />

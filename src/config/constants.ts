@@ -45,6 +45,7 @@ export enum Routes {
   PLAYGROUND_SYSTEM = '/playground/system-exploitation',
   PLAYGROUND_CRYPTO = '/playground/cryptography',
   PLAYGROUND_VM = '/playground/virtual-machine',
+  PLAYGROUND_CVE = '/playground/cve-labs',
   CONTACT = '/contact',
   TEAM = '/team',
   RESOURCES = '/resources',
